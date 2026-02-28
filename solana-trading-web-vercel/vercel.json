@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "name": "1sol-trader",
+  "builds": [
+    {
+      "src": "api/**/*.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    }
+  ],
+  "env": {
+    "PYTHONPATH": ".",
+    "HELIUS_API_KEY": "cfb197fe-7adf-4a30-a2f0-9dfdbb5924dd"
+  }
+}

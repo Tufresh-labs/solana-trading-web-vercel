@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1SOL Trader | Smart Money Intelligence</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">🎯</div>
+                <span class="logo-text">1SOL<span class="highlight">Trader</span></span>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-label">Trading</div>
+                <ul class="nav-menu">
+                    <li class="nav-item active" data-page="dashboard">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                        <div class="badge pulse">LIVE</div>
+                    </li>
+                    <li class="nav-item" data-page="signals">
+                        <i class="fas fa-satellite-dish"></i>
+                        <span>Smart Signals</span>
+                        <div class="badge" id="signal-count">0</div>
+                    </li>
+                    <li class="nav-item" data-page="portfolio">
+                        <i class="fas fa-wallet"></i>
+                        <span>Portfolio</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-label">Intelligence</div>
+                <ul class="nav-menu">
+                    <li class="nav-item" data-page="smart-money">
+                        <i class="fas fa-brain"></i>
+                        <span>Smart Money</span>
+                    </li>
+                    <li class="nav-item" data-page="whales">
+                        <i class="fas fa-water"></i>
+                        <span>Whale Tracker</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="connection-status">
+                    <div class="status-dot"></div>
+                    <span>Connected to Solana</span>
+                </div>
+                <div class="version">v2.1.0</div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search tokens, addresses..." id="global-search">
+                </div>
+                
+                <div class="top-bar-right">
+                    <div class="wallet-info">
+                        <div class="wallet-label">Portfolio</div>
+                        <div class="wallet-value">
+                            <span class="sol-amount" id="portfolio-sol">50.00</span> SOL
+                            <span class="usd-value" id="portfolio-usd">$7,500</span>
+                        </div>
+                    </div>
+                    
+                    <div class="daily-target">
+                        <div class="target-header">
+                            <span>Daily Target</span>
+                            <span class="target-ratio" id="target-ratio">0.35/1.00 SOL</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="target-progress" style="width: 35%"></div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="refresh-btn">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Page -->
+            <div class="page active" id="page-dashboard">
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: #10b981;">📈</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Today's P&L</div>
+                            <div class="stat-value positive" id="today-pnl">+0.35 SOL</div>
+                            <div class="stat-change">+52.50 USD</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: #8b5cf6;">🎯</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Win Rate</div>
+                            <div class="stat-value" id="win-rate">68%</div>
+                            <div class="stat-change">17W / 8L this week</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: #f59e0b;">🔥</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Active Signals</div>
+                            <div class="stat-value" id="active-signals">12</div>
+                            <div class="stat-change">3 new in last hour</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: #ef4444;">⚡</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Smart Money Alerts</div>
+                            <div class="stat-value" id="sm-alerts">5</div>
+                            <div class="stat-change">2 whales accumulating</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <!-- Top Signals -->
+                    <div class="panel panel-large">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-fire"></i> Top Smart Money Signals</h3>
+                        </div>
+                        <div class="panel-content" id="top-signals-container">
+                            <div class="loading">Scanning market...</div>
+                        </div>
+                    </div>
+
+                    <!-- Market Overview -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-globe"></i> Market Overview</h3>
+                        </div>
+                        <div class="panel-content">
+                            <div class="market-item">
+                                <div class="market-token">
+                                    <span style="font-size: 20px;">◎</span>
+                                    <span>SOL</span>
+                                </div>
+                                <div class="market-price">
+                                    <div class="price">$142.50</div>
+                                    <div class="change positive">+2.4%</div>
+                                </div>
+                            </div>
+                            <div class="market-item">
+                                <div class="market-token">
+                                    <span style="font-size: 20px;">₿</span>
+                                    <span>BTC</span>
+                                </div>
+                                <div class="market-price">
+                                    <div class="price">$67,230</div>
+                                    <div class="change positive">+1.2%</div>
+                                </div>
+                            </div>
+                            <div class="market-item">
+                                <div class="market-token">
+                                    <span style="font-size: 20px;">Ξ</span>
+                                    <span>ETH</span>
+                                </div>
+                                <div class="market-price">
+                                    <div class="price">$3,450</div>
+                                    <div class="change negative">-0.8%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                        </div>
+                        <div class="panel-content">
+                            <div class="activity-list" id="activity-list">
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background: rgba(16, 185, 129, 0.1);">🟢</div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">Bought BONK</div>
+                                        <div class="activity-time">2 min ago</div>
+                                    </div>
+                                    <div class="activity-amount">+0.5 SOL</div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background: rgba(139, 92, 246, 0.1);">🎯</div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">New Signal: PEPE</div>
+                                        <div class="activity-time">5 min ago</div>
+                                    </div>
+                                    <div class="activity-score">76/100</div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background: rgba(59, 130, 246, 0.1);">🐋</div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">Whale Alert: DOGE</div>
+                                        <div class="activity-time">12 min ago</div>
+                                    </div>
+                                    <div class="activity-amount">$2.4M</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Signals Page -->
+            <div class="page" id="page-signals">
+                <div class="page-header">
+                    <h1>Smart Money Signals</h1>
+                </div>
+                <div class="signals-grid" id="signals-grid"></div>
+            </div>
+
+            <!-- Portfolio Page -->
+            <div class="page" id="page-portfolio">
+                <div class="page-header">
+                    <h1>Portfolio</h1>
+                </div>
+                <div class="portfolio-grid">
+                    <div class="panel panel-large">
+                        <div class="panel-header">
+                            <h3>Holdings</h3>
+                        </div>
+                        <div class="panel-content">
+                            <p style="text-align: center; color: var(--text-secondary); padding: 40px;">
+                                Connect your wallet to view holdings
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal" id="token-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="token-title">
+                            <span class="token-icon-large" id="modal-token-icon">🟣</span>
+                            <div>
+                                <h2 id="modal-token-name">Token Name</h2>
+                                <code id="modal-token-address" class="address">So1...1112</code>
+                            </div>
+                        </div>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body" id="modal-body"></div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary">Add to Watchlist</button>
+                        <button class="btn btn-primary" id="modal-buy-btn">
+                            <i class="fas fa-rocket"></i> Execute Trade
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toast Container -->
+            <div class="toast-container" id="toast-container"></div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
